@@ -6,6 +6,8 @@ Summary:  Project Main Function
 '''
 
 from pathlib import Path
+#from scipy.io.wavfile import write
+#import matplotlib.pyplot as plt 
 import numpy as np
 import wave
 
@@ -14,8 +16,14 @@ def main():
 
     #Define report file path as befits your environment
     #this code puts the sizing_output.txt report file in the same directory as main.py
-    current_working_directory = Path(__file__).resolve().parent.parent.parent
-    file_pointer = str(current_working_directory) + "/Love-Song/lovesong.wav"
+
+    #iMac 
+    # current_working_directory = Path(__file__).resolve().parent.parent.parent
+    # file_pointer = str(current_working_directory) + "/Love-Song/lovesong.wav"
+
+    #macbook
+    current_working_directory = Path(__file__).resolve().parent
+    file_pointer = str(current_working_directory) + "/lovesong_25.wav"
 
     try:
          with wave.open(file_pointer, 'rb') as wf:
@@ -25,15 +33,15 @@ def main():
             num_frames = wf.getnframes()
             sample_width = wf.getsampwidth()
 
-            print(f"Number of channels: {num_channels}")
-            print(f"Frame rate: {frame_rate} Hz")
-            print(f"Number of frames: {num_frames}")
-            print(f"Sample width: {sample_width} bytes")
+            #print(f"Number of channels: {num_channels}")
+            #print(f"Frame rate: {frame_rate} Hz")
+            #print(f"Number of frames: {num_frames}")
+            #print(f"Sample width: {sample_width} bytes")
 
             # Read all frames from the WAV file
             frames = wf.readframes(num_frames)
-            print(f"Data type of frames: {type(frames)}")
-            print(f"Size of audio data: {len(frames)} bytes")
+            #print(f"Data type of frames: {type(frames)}")
+            #print(f"Size of audio data: {len(frames)} bytes")
 
     except FileNotFoundError:
         print("Error: WAV file not found.")
@@ -56,8 +64,24 @@ def main():
     # If stereo, reshape the array to separate channels
     if num_channels > 1:
         audio_array = audio_array.reshape(-1, num_channels)
+    
+    for element in np.nditer(audio_array):
+        print(element)
+
+    time = np.arange(0, len(audio_array)) / frame_rate
 
     wf.close()
+
+    #fp = str(current_working_directory) + "/temp.wav"
+    #write(fp, frame_rate, audio_array)
+
+    #plt.figure(figsize=(10, 4))  
+    #plt.plot(time, audio_array)
+    #plt.xlabel('Time (s)')
+    #plt.ylabel('Amplitude')
+    #plt.title('Waveform of Audio')
+    #plt.grid(True)
+    #plt.show()
 
 if __name__ == '__main__' :
     main()
